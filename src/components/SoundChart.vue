@@ -91,7 +91,10 @@ const chartOption = computed(() => {
         label: {
           show: true,
           position: 'top',
-          formatter: '{c}%'
+          formatter: '{c}%',
+          color: '#fff',
+          fontSize: 14,
+          fontWeight: 600
         }
       }
     ]
@@ -102,6 +105,9 @@ const chartOption = computed(() => {
 <style scoped>
 .chart-card {
   height: 100%;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .chart {

@@ -20,6 +20,9 @@ const props = defineProps({
 <style scoped>
 .info-card {
   margin-bottom: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .sound-status {
@@ -27,15 +30,16 @@ const props = defineProps({
   align-items: center;
   gap: 12px;
   font-size: 18px;
-  padding: 10px 0;
+  padding: 16px 0;
+  color: white;
 }
 
 .status-text {
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .status-icon {
-  font-size: 24px;
+  font-size: 28px;
 }
 </style>

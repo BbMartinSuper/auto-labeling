@@ -5,52 +5,52 @@
         <div class="header-content">
           <h1 class="title">🌀 数据展示系统</h1>
           <div class="header-right">
-            <a-button 
-              type="default" 
-              @click="prevFile" 
-              :disabled="fileList.length <= 1 || loading"
-              style="margin-right: 8px;">
-              ⬅️ 上一个
-            </a-button>
-            <a-button type="primary" @click="loadData" :loading="loading">
-              🔄 刷新数据
-            </a-button>
-            <a-button 
-              type="default" 
-              @click="nextFile" 
-              :disabled="fileList.length <= 1 || loading"
-              style="margin-left: 8px;">
-              下一个 ➡️
-            </a-button>
-            <a-tag color="blue" style="font-size: 14px; margin-left: 16px;">
-              📊 {{ currentIndex + 1 }}/{{ fileList.length }}
-            </a-tag>
-            <a-tag color="green" style="font-size: 14px; margin-left: 8px;">
-              📄 {{ fileName }}
-            </a-tag>
-            <a-tag color="red" style="font-size: 14px; margin-left: 8px;">
-              📅 {{ data.日期 }}
-            </a-tag>
+            <div class="nav-buttons">
+              <a-button 
+                type="default" 
+                @click="prevFile" 
+                :disabled="fileList.length <= 1 || loading"
+                class="nav-button">
+                ⬅️ 上一个
+              </a-button>
+              <a-button type="primary" @click="loadData" :loading="loading" class="refresh-button">
+                🔄 刷新数据
+              </a-button>
+              <a-button 
+                type="default" 
+                @click="nextFile" 
+                :disabled="fileList.length <= 1 || loading"
+                class="nav-button">
+                下一个 ➡️
+              </a-button>
+            </div>
           </div>
         </div>
       </a-layout-header>
 
       <a-layout-content class="content">
-        <a-row :gutter="[16, 16]">
-          <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <a-row :gutter="[12, 12]" type="flex">
+    
+          <a-col :style="{ flex: '0 0 40%', maxWidth: '40%' }">
             <WindFarmInfo :wind-farm-data="data.风场" />
           </a-col>
 
-          <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <a-col :style="{ flex: '0 0 20%', maxWidth: '20%' }">
             <TurbineInfo :turbine-data="data.机组" />
           </a-col>
 
-          <a-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+          <a-col :style="{ flex: '0 0 40%', maxWidth: '40%' }">
+            <FileInfoCard 
+              :file-name="fileName" 
+              :current-index="currentIndex" 
+              :total-files="fileList.length" 
+              :date="data.日期" 
+            />
+          </a-col>
+          <a-col :xs="24" :md="8">
             <SoundStatus :sound-status="data.扫风声" />
           </a-col>
-
-          <!-- 声音类型 -->
-          <a-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16">
+          <a-col :xs="24" :md="16">
             <SoundChart :sound-types="data.声音类型" />
           </a-col>
         </a-row>
@@ -70,6 +70,7 @@ import WindFarmInfo from './components/WindFarmInfo.vue'
 import TurbineInfo from './components/TurbineInfo.vue'
 import SoundStatus from './components/SoundStatus.vue'
 import SoundChart from './components/SoundChart.vue'
+import FileInfoCard from './components/FileInfoCard.vue'
 
 const loading = ref(false)
 const fileList = ref([])
@@ -87,7 +88,7 @@ const data = ref({
   },
   机组: {
     数量: 0,
-    型号: ''
+    组号: ''
   },
   日期: '',
   扫风声: '',
@@ -126,10 +127,10 @@ const loadData = async () => {
     const modulePath = `../data/${fileName.value}`
     const module = await fileModules.value[modulePath]()
     data.value = module.default
-    message.success(`数据刷新成功！当前文件：${fileName.value}`, 1)
+    message.success(`数据刷新成功！当前文件：${fileName.value}`, 1.5)
   } catch (error) {
     console.error('加载数据失败:', error)
-    message.error(`数据加载失败，请检查 ${fileName.value} 文件`, 1)
+    message.error(`数据加载失败，请检查 ${fileName.value} 文件`, 1.5)
   } finally {
     loading.value = false
   }
@@ -155,7 +156,7 @@ onMounted(() => {
 <style scoped>
 .app-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #309b3e 0%, #5a85cc 100%);
 }
 
 .layout {
@@ -163,9 +164,11 @@ onMounted(() => {
 }
 
 .header {
-  background: linear-gradient(90deg, #1890ff 0%, #096dd9 100%);
-  padding: 0 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(90deg, #910996 0%, #3d279c 100%);
+  padding: 0 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 10;
 }
 
 .header-content {
@@ -177,25 +180,43 @@ onMounted(() => {
 }
 
 .title {
-  color: white;
-  font-size: 24px;
-  font-weight: 600;
+  color: rgb(255, 255, 255);
+  font-size: 28px;
+  font-weight: 700;
   margin: 0;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.date-display {
+.nav-buttons {
   display: flex;
+  gap: 12px;
   align-items: center;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
+.nav-button {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.nav-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.refresh-button {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.refresh-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .content {
-  padding: 24px;
+  padding: 16px;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -203,8 +224,9 @@ onMounted(() => {
 
 .footer {
   text-align: center;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
   color: #666;
+  font-weight: 500;
 }
 </style>
